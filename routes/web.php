@@ -18,3 +18,9 @@ $router->get('/', function () use ($router) {
 $router->get('/key', function () use ($router) {
     return str_random(32);
 });
+
+$router->get('/blog', 'BlogController@index');
+$router->get('/blog/{id}', 'BlogController@show');
+$router->post('/blog', 'BlogController@store');
+$router->put('/blog/{id}', 'BlogController@update');
+$router->delete('/blog/{id}', 'BlogController@delete');

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Blog;
 
 class BlogController extends Controller
 {
@@ -18,7 +19,7 @@ class BlogController extends Controller
 
     public function show($id)
     {
-        $post = Author::find($id);
+        $post = Blog::find($id);
         if (!$post) {
             return response()->json([
                 'message' => 'Post not found'
@@ -31,17 +32,17 @@ class BlogController extends Controller
     public function store(Request $request)
     {
         $this->validate($request, [
-            'name' => 'required',
-            'gender' => 'required',
-            'biography' => 'required'
+            'judul' => 'required',
+            'isi' => 'required',
+            'penulis' => 'required'
         ]);
 
-        return Author::create($request->all());
+        return Blog::create($request->all());
     }
 
     public function update(Request $request, $id)
     {
-        $post = Author::find($id);
+        $post = Blog::find($id);
 
         if ($post) {
             $post->update($request->all());
@@ -57,7 +58,7 @@ class BlogController extends Controller
 
     public function delete($id)
     {
-        $post = Author::find($id);
+        $post = Blog::find($id);
 
         if ($post) {
             $post->delete();

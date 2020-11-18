@@ -1,22 +1,13 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class User extends Model
+class Blog extends Model
 {
-   
+    protected $table = 'blog';
     protected $fillable = [
-        'name', 'email',
-    ];
-
-    /**
-     * The attributes excluded from the model's JSON form.
-     *
-     * @var array
-     */
-    protected $hidden = [
-        'password',
+        'judul', 'isi', 'penulis'
     ];
 }
