@@ -24,3 +24,5 @@ $router->get('/blog/{id}', 'BlogController@show');
 $router->post('/blog', 'BlogController@store');
 $router->put('/blog/{id}', 'BlogController@update');
 $router->delete('/blog/{id}', 'BlogController@delete');
+
+$router->post('/user', 'UserController@register');
