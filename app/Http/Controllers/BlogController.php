@@ -17,6 +17,12 @@ class BlogController extends Controller
         //
     }
 
+    public function index()
+    {
+        return Blog::all();
+    }
+
+
     public function show($id)
     {
         $post = Blog::find($id);
