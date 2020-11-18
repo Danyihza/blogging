@@ -3,28 +3,13 @@
 namespace App\Http\Middleware;
 
 use Closure;
-use Illuminate\Contracts\Auth\Factory as Auth;
+use Firebase\JWT\JWT;
+use Firebase\JWT\BeforeValidException;
+use Firebase\JWT\ExpiredException;
+use Firebase\JWT\SignatureInvalidException;
 
 class Authenticate
 {
-    /**
-     * The authentication guard factory instance.
-     *
-     * @var \Illuminate\Contracts\Auth\Factory
-     */
-    protected $auth;
-
-    /**
-     * Create a new middleware instance.
-     *
-     * @param  \Illuminate\Contracts\Auth\Factory  $auth
-     * @return void
-     */
-    public function __construct(Auth $auth)
-    {
-        $this->auth = $auth;
-    }
-
     /**
      * Handle an incoming request.
      *
@@ -35,9 +20,42 @@ class Authenticate
      */
     public function handle($request, Closure $next, $guard = null)
     {
-        if ($this->auth->guard($guard)->guest()) {
-            return response('Unauthorized.', 401);
+        $jwt = $request->header('Authorization') ?? $request->header('authorization');
+
+        if (!$jwt)
+            return response()->json([
+                'success' => false,
+                'message' => 'JWT tidak ada.'
+            ], 403);
+
+        $jwt = str_replace("Bearer ", "", $jwt);
+
+        $user = null;
+        try {
+            $user = JWT::decode($jwt, env('JWT_SECRET'));
+        } catch (BeforeValidException $bve) {
+            return response()->json([
+                'success' => false,
+                'message' => 'JWT error: ' . $bve->getMessage()
+            ], 401);
+        } catch (ExpiredException $ee) {
+            return response()->json([
+                'success' => false,
+                'message' => 'JWT error: ' . $ee->getMessage()
+            ], 401);
+        } catch (SignatureInvalidException $sie) {
+            return response()->json([
+                'success' => false,
+                'message' => 'JWT error: ' . $sie->getMessage()
+            ], 401);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Servernya lagi ngambek nih. :('
+            ], 500);
         }
+
+        $request->auth = $user;
 
         return $next($request);
     }

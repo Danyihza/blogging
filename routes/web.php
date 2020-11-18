@@ -21,9 +21,11 @@ $router->get('/key', function () use ($router) {
 
 $router->get('/blog', 'BlogController@index');
 $router->get('/blog/{id}', 'BlogController@show');
-$router->post('/blog', 'BlogController@store');
-$router->put('/blog/{id}', 'BlogController@update');
-$router->delete('/blog/{id}', 'BlogController@delete');
+$router->group(['middleware' => 'auth'], function () use ($router) {
+    $router->post('/blog', 'BlogController@store');
+    $router->put('/blog/{id}', 'BlogController@update');
+    $router->delete('/blog/{id}', 'BlogController@delete');
+});
 
 $router->post('/register', 'AuthController@register');
 $router->post('/login', 'AuthController@login');

@@ -43,7 +43,15 @@ class BlogController extends Controller
             'penulis' => 'required'
         ]);
 
-        return Blog::create($request->all());
+        $blog = new Blog($request->all());
+
+        $blog->user_id = $request->auth->id;
+
+        if ($blog->save())
+            return response()->json([
+                'message' => 'Sukses yay!',
+                'data' => $blog
+            ], 201);
     }
 
     public function update(Request $request, $id)
@@ -51,6 +59,11 @@ class BlogController extends Controller
         $post = Blog::find($id);
 
         if ($post) {
+            if ($post->user_id != $request->auth->id)
+                return response()->json([
+                    'message' => 'Anda tidak berhak!!!'
+                ], 401);
+
             $post->update($request->all());
             return response()->json([
                 'message' => 'Post has been updated',
@@ -62,11 +75,16 @@ class BlogController extends Controller
         ], 404);
     }
 
-    public function delete($id)
+    public function delete(Request $request, $id)
     {
         $post = Blog::find($id);
 
         if ($post) {
+            if ($post->user_id != $request->auth->id)
+                return response()->json([
+                    'message' => 'Anda tidak berhak!!!'
+                ], 401);
+
             $post->delete();
 
             return response()->json([
