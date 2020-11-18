@@ -25,4 +25,5 @@ $router->post('/blog', 'BlogController@store');
 $router->put('/blog/{id}', 'BlogController@update');
 $router->delete('/blog/{id}', 'BlogController@delete');
 
-$router->post('/user', 'UserController@register');
+$router->post('/register', 'AuthController@register');
+$router->post('/login', 'AuthController@login');
