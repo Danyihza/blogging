@@ -32,7 +32,7 @@ class Authenticate
 
         $user = null;
         try {
-            $user = JWT::decode($jwt, env('JWT_SECRET'));
+            $user = JWT::decode($jwt, env('JWT_SECRET'), ['HS256']);
         } catch (BeforeValidException $bve) {
             return response()->json([
                 'success' => false,
@@ -55,7 +55,7 @@ class Authenticate
             ], 500);
         }
 
-        $request->auth = $user;
+        $request->auth = $user->data;
 
         return $next($request);
     }

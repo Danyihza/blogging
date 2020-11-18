@@ -8,6 +8,6 @@ class Blog extends Model
 {
     protected $table = 'blog';
     protected $fillable = [
-        'judul', 'isi', 'penulis'
+        'judul', 'isi', 'penulis', 'user_id'
     ];
 }

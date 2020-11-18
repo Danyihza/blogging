@@ -20,7 +20,10 @@ class AuthController extends Controller
         $user->username = $request->username;
         $user->password = Hash::make($request->password);
 
-        $jwt = JWT::encode($user, env('JWT_SECRET'));
+        $jwt = JWT::encode([
+            "iat" => date('Y-m-d H:i:s'),
+            "data" => $user
+        ], env('JWT_SECRET'));
 
         try {
             $user->save();
@@ -49,7 +52,10 @@ class AuthController extends Controller
         $user = User::where('username', $request->username)->first();
 
         if (Hash::check($request->password, $user->password)) {
-            $jwt = JWT::encode($user, env('JWT_SECRET'));
+            $jwt = JWT::encode([
+                "iat" => date('Y-m-d H:i:s'),
+                "data" => $user
+            ], env('JWT_SECRET'));
 
             return response()->json([
                 'success' => true,
